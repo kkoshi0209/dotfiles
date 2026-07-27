@@ -3,6 +3,9 @@
 このリポジトリに入っている設定を、1項目ずつ「何をするか / なぜ入れたか」で説明する。
 「これ何だっけ」となったときにここを引く。
 
+- どこに何があるかは [structure.md](structure.md)
+- 仕組み（リンクの張られ方・読み込み順序）は [how-it-works.md](how-it-works.md)
+
 - [zsh/.zprofile](#zshzprofile)
 - [zsh/.zshrc](#zshzshrc)
 - [zsh/.gemrc](#zshgemrc)

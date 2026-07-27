@@ -2,8 +2,10 @@
 
 macOS の環境設定をまとめたもの。`git clone` して `./install.sh` を叩けば環境が戻る。
 
-> **個々の設定が何をしているかは [docs/settings.md](docs/settings.md) に1項目ずつ書いてある。**
-> 「この設定なんだっけ」となったらそちらを引く。
+> ドキュメントは3本立て:
+> **[docs/structure.md](docs/structure.md)**（フォルダ構成・図解）、
+> **[docs/settings.md](docs/settings.md)**（設定を1項目ずつ解説）、
+> **[docs/how-it-works.md](docs/how-it-works.md)**（仕組みを図で追う）。
 
 ## 構成
 
@@ -15,6 +17,7 @@ macOS の環境設定をまとめたもの。`git clone` して `./install.sh` �
 | `karabiner/` | `karabiner.json` | `~/.config/karabiner/karabiner.json` |
 | `Brewfile` | Homebrew の formula / cask / VS Code 拡張 18 個 | — |
 | `install.sh` | 上記のシンボリックリンクを張る | — |
+| `docs/` | 解説（[structure.md](docs/structure.md) / [settings.md](docs/settings.md) / [how-it-works.md](docs/how-it-works.md)） | — |
 
 ## 新しいマシンでの復元手順
 
