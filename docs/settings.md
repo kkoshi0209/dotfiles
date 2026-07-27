@@ -643,7 +643,6 @@ EOF
 | `[html] editor.defaultFormatter` | HTML は VS Code 内蔵のフォーマッタを使う |
 | `workbench.editor.pinnedTabsOnSeparateRow: true` | ピン留めしたタブを別の行に分けて表示する |
 | `claudeCode.preferredLocation: "panel"` | Claude Code を下部パネルに開く |
-| `github.copilot.enable: {"*": false}` | Copilot の補完を全言語で無効にする |
 | `editor.acceptSuggestionOnEnter: "off"` | **Enter で補完候補を確定しない**（改行と誤爆しない） |
 | `explorer.confirmDragAndDrop: false` | ファイルのドラッグ移動時に確認しない |
 | `files.insertFinalNewline: true` | ファイル末尾に改行を1つ入れる |
@@ -1029,7 +1028,7 @@ HashiCorp の公式リポジトリを追加する。`terraform` はここから�
 
 ### vscode（拡張機能）
 
-19 個。`brew bundle` が `code --install-extension` を呼んで一括で入れる。
+18 個。`brew bundle` が `code --install-extension` を呼んで一括で入れる。
 
 | 拡張 | 用途 |
 |---|---|
@@ -1051,7 +1050,6 @@ HashiCorp の公式リポジトリを追加する。`terraform` はここから�
 | `yzhang.markdown-all-in-one` | Markdown の表整形や目次生成 |
 | `streetsidesoftware.code-spell-checker` | コード中の英単語のスペルチェック |
 | `ms-vscode.live-server` | ローカルの HTML をライブリロード付きで配信する |
-| `github.copilot-chat` | Copilot Chat（`settings.json` で補完は無効化している） |
 
 ### 更新のしかた
 
@@ -1061,6 +1059,34 @@ cd ~/dotfiles && brew bundle dump --vscode --force
 
 現在の状態で Brewfile を作り直す。`--force` は既存ファイルの上書きを許可する指定。
 差分を確認してからコミットする。
+
+### GitHub Copilot について
+
+**意図的に管理対象から外している。**
+
+以前は `github.copilot-chat` を入れたうえで `settings.json` 側で
+`github.copilot.enable: {"*": false}` により補完を無効化していたが、以下の理由で
+拡張ごと削除する構成に変えた。
+
+- 補完本体の `github.copilot` 拡張は**そもそもインストールされていなかった**ため、
+  `github.copilot.enable` と `github.copilot.nextEditSuggestions.enabled` は
+  効いていない設定だった
+- 実際に動いていたのは Copilot Chat（サイドバー、`Cmd-I` のインラインチャット、
+  タイトルバーのボタン）で、これらは上記の設定では止まらない
+
+`brew bundle dump` は今インストールされているものをそのまま書き出すため、
+**手元に拡張が残っていると Brewfile に復活する**。差分に出てきたら削除する。
+
+再び有効にしたくなったら:
+
+```bash
+code --install-extension github.copilot-chat
+```
+
+> VS Code 内蔵の AI 機能（チャット UI、インラインチャット、AI コードアクション）まで
+> まとめて止めたい場合は `"chat.disableAIFeatures": true`（VS Code 1.104 以降）を使う。
+> ただしこれは VS Code の AI 基盤そのものを無効化するため、
+> Claude Code 拡張への影響は未検証。
 
 ---
 

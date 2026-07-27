@@ -13,7 +13,7 @@ macOS の環境設定をまとめたもの。`git clone` して `./install.sh` �
 | `git/` | `.gitconfig` / `gitignore_global` | `~/.gitconfig` / `~/.config/git/ignore` |
 | `vscode/` | `settings.json` | `~/Library/Application Support/Code/User/settings.json` |
 | `karabiner/` | `karabiner.json` | `~/.config/karabiner/karabiner.json` |
-| `Brewfile` | Homebrew の formula / cask / VS Code 拡張 | — |
+| `Brewfile` | Homebrew の formula / cask / VS Code 拡張 18 個 | — |
 | `install.sh` | 上記のシンボリックリンクを張る | — |
 
 ## 新しいマシンでの復元手順
@@ -161,6 +161,7 @@ Rails 向けには以下を入れている:
 
 ## 管理していないもの
 
+- **GitHub Copilot** — 意図的に外している。`brew bundle dump` で復活させないこと（下記）
 - **gh の認証情報** (`~/.config/gh/hosts.yml`) — OAuth トークンが入るため。`.gitignore` で二重に防いでいる
 - **Hammerspoon** — 設定が固まっていないため対象外
 - **macOS のシステム設定** (`defaults write`) — 後から `macos/defaults.sh` として足せる
@@ -174,6 +175,10 @@ cd ~/dotfiles && brew bundle dump --vscode --force
 ```
 
 差分を確認してからコミットする。
+
+> **注意**: `brew bundle dump` は今インストールされているものをそのまま書き出す。
+> 意図的に外した `github.copilot-chat` が手元に残っていると復活するので、
+> 差分に出てきたら削除する。
 
 ## 参考
 
