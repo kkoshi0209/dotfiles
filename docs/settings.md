@@ -728,7 +728,17 @@ git 上では差分が出ているのに VS Code では見えないという食�
 
 `git.pruneOnFetch` は `.gitconfig` の `fetch.prune` と同じ効果を VS Code 側でも効かせるもの。
 
-#### 言語ごとのフォーマッタ
+#### ターミナル
+
+```jsonc
+"terminal.integrated.scrollback": 10000
+```
+
+内蔵ターミナルの履歴保持行数。既定の 1000 行だと長いビルドログを遡れない。
+
+### Ruby / Rails 向けの設定
+
+#### フォーマッタの振り分け
 
 ```jsonc
 "[ruby]": {
@@ -739,15 +749,201 @@ git 上では差分が出ているのに VS Code では見えないという食�
 **これが無いと `.rb` の保存時整形が黙って失敗する。**
 `editor.defaultFormatter` が Prettier になっているが、Prettier は Ruby を扱えない。
 `formatOnSave` が有効でもエラーにならず何も起きないため、原因に気付きにくい。
-インストール済みの `shopify.ruby-lsp` に振り分けて解決している。
-
-#### ターミナル
 
 ```jsonc
-"terminal.integrated.scrollback": 10000
+"[erb]": {
+  "editor.formatOnSave": false,
+}
 ```
 
-内蔵ターミナルの履歴保持行数。既定の 1000 行だと長いビルドログを遡れない。
+ERB も同じ問題を起こす。ただし ERB を整形できる拡張は現在入っていないため、
+振り分け先が無い。**保存時整形そのものを止めて、黙って失敗する状態を解消している。**
+
+整形もしたい場合は [`aliariff.vscode-erb-beautify`](https://marketplace.visualstudio.com/items?itemName=aliariff.vscode-erb-beautify)
+を入れる（`htmlbeautifier` gem を Gemfile に足す必要がある）。入れたうえで
+`"editor.formatOnSave": true` と `"editor.defaultFormatter": "aliariff.vscode-erb-beautify"`
+に変える。
+
+> `.html.erb` が `erb` として認識される仕組み: 拡張子は最後の `.erb` で判定されるため、
+> `files.associations` を書かなくても `erb` 言語になる。
+> `Gemfile` / `Rakefile` / `*.jbuilder` / `*.rake` などが `ruby` になるのも
+> ruby-lsp 拡張が言語定義として登録しているため。
+
+#### `editor.wordSeparators` — Ruby の記号を単語に含める
+
+```jsonc
+"[ruby]": {
+  "editor.wordSeparators": "`~#%^&*()-=+[{]}\\|;:'\",.<>/",
+}
+```
+
+VS Code の既定値は `` `~!@#$%^&*()-=+[{]}\|;:'",.<>/? `` で、
+**`@` `$` `?` `!` が単語の区切り**として扱われる。そのため Ruby では:
+
+| 対象 | 既定の挙動 | この設定を入れた後 |
+|---|---|---|
+| `@user` をダブルクリック | `user` だけ選択される | `@user` が選択される |
+| `valid?` をダブルクリック | `valid` だけ選択される | `valid?` が選択される |
+| `save!` をダブルクリック | `save` だけ選択される | `save!` が選択される |
+| `$stdout` をダブルクリック | `stdout` だけ選択される | `$stdout` が選択される |
+
+既定値から `@` `$` `?` `!` の4文字を取り除いている。
+`#` は残してある（コメントと文字列展開 `#{}` の区切りとして機能させるため）。
+
+ダブルクリックだけでなく、`Ctrl-D`（同じ単語を選択）や `Option-←/→`（単語移動）にも効く。
+`[erb]` にも同じ設定を入れている。
+
+#### rubyLsp — Ruby のバージョンマネージャ
+
+```jsonc
+"rubyLsp.rubyVersionManager": {
+  "identifier": "rbenv",
+}
+```
+
+ruby-lsp が Ruby をどう見つけるかの指定。
+`asdf` / `chruby` / `rbenv` / `rvm` / `mise` / `shadowenv` / `none` / `custom` / `auto` から選ぶ。
+
+既定は `auto` で自動判別を試みるが、外れると
+「Ruby が見つからない」で LSP が起動せず、補完も定義ジャンプも効かなくなる。
+このマシンは rbenv なので明示している。
+
+> **値の形式に注意**: 古い記事では `"rubyLsp.rubyVersionManager": "rbenv"` という
+> 文字列形式で書かれていることがあるが、現在は `{ "identifier": "rbenv" }` という
+> オブジェクト形式が正しい。
+
+#### rubyLsp.formatter は既定のままにしてある
+
+`rubyLsp.formatter` は設定していない（既定値 `auto`）。
+
+`auto` はプロジェクトの Gemfile を見て `rubocop` / `standard` / `syntax_tree` を
+自動で選ぶ。ここで `"rubocop"` と固定すると、**rubocop を使っていないリポジトリを開いた
+ときにエラーになる**（`RuboCop was not found in the Gemfile or gemspec`）。
+ユーザー全体の設定に書くものなので、プロジェクトごとに変わるものは固定しない。
+
+プロジェクト単位で固定したい場合は、そのリポジトリの `.vscode/settings.json` に書く。
+
+#### 知っておくと良い rubyLsp の設定（今回は未設定）
+
+| 設定 | 使いどころ |
+|---|---|
+| `rubyLsp.pullDiagnosticsOn: "save"` | 大きなファイルで rubocop の診断が重いとき。既定の `both`（変更時＋保存時）から保存時だけに減らす |
+| `rubyLsp.indexing.excludedPatterns` | `**/test/**/*.rb` などを索引から外して起動を速くする |
+| `rubyLsp.bundleGemfile` | Gemfile がリポジトリ直下に無い構成のとき |
+| `rubyLsp.featuresConfiguration.codeLens.enableTestCodeLens` | テストの上に出る「Run」リンク。既定で有効 |
+
+#### `editor.semanticHighlighting.enabled`
+
+```jsonc
+"editor.semanticHighlighting.enabled": true
+```
+
+ruby-lsp は構文だけでなく**意味を解析した色分け**（ローカル変数とメソッド呼び出しを
+別の色にする、など）を提供する。既定値は `configuredByTheme` で、
+テーマ側が対応していないと無効になる。明示的に有効化している。
+
+#### `emmet.includeLanguages` — ERB で Emmet を使う
+
+```jsonc
+"emmet.includeLanguages": {
+  "erb": "html",
+}
+```
+
+`.html.erb` の中で Emmet の略記が使えるようになる。
+`div.card>ul>li*3` と打って `Tab` を押すと HTML に展開される。
+既定では `erb` は Emmet の対象外。
+
+#### `workbench.editor.customLabels.patterns` — タブでファイルを見分ける
+
+```jsonc
+"workbench.editor.customLabels.patterns": {
+  "**/app/views/**/*": "${dirname}/${filename}.${extname}",
+  "**/spec/**/*_spec.rb": "${dirname}/${filename}.${extname}",
+  "**/test/**/*_test.rb": "${dirname}/${filename}.${extname}",
+}
+```
+
+**Rails で一番効く設定かもしれない。**
+
+Rails は規約でファイル名が決まるため、`index.html.erb` や `show.html.erb` が
+プロジェクト中に大量にある。タブを何枚か開くと、どれがどのリソースの
+ビューなのか区別がつかなくなる。
+
+この設定を入れると、タブの表示が `index.html.erb` から
+**`users/index.html.erb`** に変わる。
+
+使える変数:
+
+| 変数 | 意味 |
+|---|---|
+| `${filename}` | 拡張子を除いたファイル名。`index.html.erb` なら `index.html` |
+| `${extname}` | 拡張子。`erb` |
+| `${extname(N)}` | N 番目の拡張子 |
+| `${dirname}` | 親ディレクトリ名。`users` |
+| `${dirname(N)}` | N 個上のディレクトリ名 |
+
+対象は `app/views/` と `spec/` `test/` に絞ってある。
+すべてのファイルに適用するとタブが長くなりすぎるため。
+
+#### `explorer.fileNesting.patterns` — Rails 向けの追加
+
+| 親 | 子 |
+|---|---|
+| `Gemfile` | `Gemfile.lock`, `.ruby-version`, `.ruby-gemset`, `.tool-versions` |
+| `.rubocop.yml` | `.rubocop_todo.yml` |
+| `docker-compose.yml` | `docker-compose.*.yml`, `Dockerfile*`, `.dockerignore` |
+| `.env` | `.env.*` |
+| `README.md` | `LICENSE*`, `CHANGELOG*`, `CONTRIBUTING*`, `CODE_OF_CONDUCT*` |
+
+リポジトリ直下に並ぶ設定ファイル群がまとまり、`app/` や `config/` が見つけやすくなる。
+
+> ファイル入れ子は**同じディレクトリ内**でしか働かない。
+> `app/models/user.rb` の下に `spec/models/user_spec.rb` をぶら下げることはできない。
+
+#### 検索とファイル監視の Rails 向け除外
+
+`search.exclude` に追加したもの:
+
+| パターン | 理由 |
+|---|---|
+| `**/vendor/bundle` `**/.bundle` | bundle install したgemの実体。検索結果を埋め尽くす |
+| `**/storage` | Active Storage がアップロードファイルを置く |
+| `**/public/assets` `**/public/packs` | プリコンパイル済みのアセット。元ファイルと二重にヒットする |
+| `**/app/assets/builds` | jsbundling / cssbundling のビルド結果 |
+| `**/db/*.sqlite3*` | SQLite のデータベース本体 |
+| `**/Gemfile.lock` | gem 名を検索したときに必ずヒットして邪魔になる |
+
+`files.watcherExclude` に追加したもの:
+
+| パターン | 理由 |
+|---|---|
+| **`**/log/**`** | **効果が一番大きい。** `development.log` は開発中ずっと書き込まれ続けるため、監視したままだと VS Code が反応し続けて CPU を食う |
+| `**/vendor/bundle/**` `**/.bundle/**` | ファイル数が非常に多い |
+| `**/storage/**` | アップロードのたびに増える |
+| `**/public/assets/**` `**/public/packs/**` `**/app/assets/builds/**` | アセットのビルドのたびに大量に書き換わる |
+
+#### `files.associations`
+
+```jsonc
+"files.associations": {
+  "Brewfile": "ruby",
+  ".simplecov": "ruby",
+}
+```
+
+ruby-lsp が `Gemfile` / `Rakefile` / `*.rake` / `*.jbuilder` / `*.gemspec` などは
+すでに `ruby` として登録しているが、`Brewfile`（Homebrew）と `.simplecov` は
+対象外なので補っている。どちらも中身は Ruby の DSL。
+
+#### 検討したが入れなかったもの
+
+| 設定 | 入れなかった理由 |
+|---|---|
+| `editor.rulers: [120]` | rubocop の `Layout/LineLength` の既定は 120 だが、Rails 8 標準の `rubocop-rails-omakase` はこの cop 自体を無効にしている。プロジェクトによって正解が違う |
+| `"rubyLsp.formatter": "rubocop"` | rubocop を使っていないリポジトリでエラーになる（上述） |
+| `files.associations` で `*.html.erb` → `erb` | 拡張子の判定で既に `erb` になるため不要 |
+| `editor.codeActionsOnSave` で rubocop 自動修正 | ruby-lsp の formatOnSave が既に rubocop の整形を通す。二重にかけると保存が重くなる |
 
 ---
 

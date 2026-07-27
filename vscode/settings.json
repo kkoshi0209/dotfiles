@@ -23,6 +23,16 @@
   // （これが無いと .rb の formatOnSave が黙って失敗する）
   "[ruby]": {
     "editor.defaultFormatter": "Shopify.ruby-lsp",
+    // 既定値から @ $ ? ! を除いた。ダブルクリックで @user / valid? / $stdout を
+    // 丸ごと選択できるようになる（既定ではこれらの記号で切れる）
+    "editor.wordSeparators": "`~#%^&*()-=+[{]}\\|;:'\",.<>/",
+  },
+  // ERB を整形できるフォーマッタが入っていないため、保存時整形を止める。
+  // 有効なままだと prettier が呼ばれて黙って失敗する。
+  // 整形したい場合は拡張 aliariff.vscode-erb-beautify を入れて true に戻す。
+  "[erb]": {
+    "editor.formatOnSave": false,
+    "editor.wordSeparators": "`~#%^&*()-=+[{]}\\|;:'\",.<>/",
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
@@ -56,6 +66,12 @@
     "*.db3": "${capture}.${extname}-*",
     "*.sdb": "${capture}.${extname}-*",
     "*.s3db": "${capture}.${extname}-*",
+    // Rails
+    "Gemfile": "Gemfile.lock, .ruby-version, .ruby-gemset, .tool-versions",
+    ".rubocop.yml": ".rubocop_todo.yml",
+    "docker-compose.yml": "docker-compose.*.yml, Dockerfile*, .dockerignore",
+    ".env": ".env.*",
+    "README.md": "LICENSE*, CHANGELOG*, CONTRIBUTING*, CODE_OF_CONDUCT*",
   },
 
   // ================================================================
@@ -98,10 +114,19 @@
     "**/coverage": true,
     "**/tmp": true,
     "**/log": true,
-    "**/vendor/bundle": true,
     "**/.terraform": true,
     "**/package-lock.json": true,
     "**/yarn.lock": true,
+    // Rails
+    "**/vendor/bundle": true,
+    "**/.bundle": true,
+    "**/storage": true,
+    "**/public/assets": true,
+    "**/public/packs": true,
+    "**/public/packs-test": true,
+    "**/app/assets/builds": true,
+    "**/db/*.sqlite3*": true,
+    "**/Gemfile.lock": true,
   },
   "files.watcherExclude": {
     "**/node_modules/**": true,
@@ -110,8 +135,15 @@
     "**/coverage/**": true,
     "**/tmp/**": true,
     "**/.git/objects/**": true,
-    "**/vendor/bundle/**": true,
     "**/.terraform/**": true,
+    // Rails。log/ は development.log が常時書き変わるので監視から外す効果が大きい
+    "**/log/**": true,
+    "**/vendor/bundle/**": true,
+    "**/.bundle/**": true,
+    "**/storage/**": true,
+    "**/public/assets/**": true,
+    "**/public/packs/**": true,
+    "**/app/assets/builds/**": true,
   },
   // グローバル gitignore の内容も検索結果から外す
   "search.useGlobalIgnoreFiles": true,
@@ -131,4 +163,40 @@
   // ================================================================
   // スクロールバックを増やす（長いログを遡れる）
   "terminal.integrated.scrollback": 10000,
+
+  // ================================================================
+  // Ruby LSP
+  // ================================================================
+  // Ruby のバージョンマネージャを明示する。auto でも当たることが多いが、
+  // 外すと「Ruby が見つからない」で LSP が起動しないことがある。
+  "rubyLsp.rubyVersionManager": {
+    "identifier": "rbenv",
+  },
+  // rubyLsp.formatter は既定の "auto" のまま。プロジェクトの Gemfile を見て
+  // rubocop / standard / syntax_tree を自動で選ぶ。ここで "rubocop" と固定すると
+  // rubocop を使っていないリポジトリでエラーになる。
+  //
+  // ruby-lsp の意味解析による色分けを効かせる
+  // （既定の configuredByTheme だとテーマ次第で無効になる）
+  "editor.semanticHighlighting.enabled": true,
+
+  // ================================================================
+  // Rails
+  // ================================================================
+  // ERB で Emmet を使えるようにする（div.card>ul>li*3 → Tab で展開）
+  "emmet.includeLanguages": {
+    "erb": "html",
+  },
+  // Rails は同じファイル名が大量に出るため、タブに親ディレクトリ名も出す。
+  // index.html.erb が並ぶ代わりに users/index.html.erb と表示される。
+  "workbench.editor.customLabels.patterns": {
+    "**/app/views/**/*": "${dirname}/${filename}.${extname}",
+    "**/spec/**/*_spec.rb": "${dirname}/${filename}.${extname}",
+    "**/test/**/*_test.rb": "${dirname}/${filename}.${extname}",
+  },
+  "files.associations": {
+    // Homebrew の Brewfile は Ruby の DSL
+    "Brewfile": "ruby",
+    ".simplecov": "ruby",
+  },
 }

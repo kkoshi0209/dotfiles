@@ -147,8 +147,17 @@ macOS が撒くファイル、エディタの作業ファイル、`.env` や `*.
 - 保存時に行末空白を除去、改行コードを LF に固定
 - `diffEditor.ignoreTrimWhitespace: false` — 空白だけの変更も差分に出す
 - `search.exclude` / `files.watcherExclude` — `node_modules` などを検索・監視から外して軽くする
+
+Rails 向けには以下を入れている:
+
 - `[ruby]` の formatter を `Shopify.ruby-lsp` に指定
   （既定の formatter が prettier のままだと `.rb` の保存時整形が黙って失敗する）
+- `[erb]` の `formatOnSave` を無効化（同じ理由。ERB を整形できる拡張が無いため）
+- `rubyLsp.rubyVersionManager` に `rbenv` を明示（外すと LSP が起動しないことがある）
+- `editor.wordSeparators` を Ruby 向けに調整 — **`@user` や `valid?` をダブルクリックで丸ごと選択できる**
+- `workbench.editor.customLabels.patterns` — **タブが `index.html.erb` ではなく `users/index.html.erb` と表示される**
+- `emmet.includeLanguages` で ERB でも Emmet を使えるようにする
+- `files.watcherExclude` に `**/log/**` — `development.log` の監視をやめて CPU を下げる
 
 ## 管理していないもの
 
