@@ -1,0 +1,134 @@
+{
+  // 新規ウィンドウを最後に開いたウィンドウと同じサイズで開く
+  "window.newWindowDimensions": "inherit",
+  // タブ幅指定
+  "editor.tabSize": 2,
+  // 空白文字を可視化。none, all, boundary：単語間の単一スペースは可視化しない。
+  "editor.renderWhitespace": "boundary",
+  "workbench.colorCustomizations": {
+    "tab.activeBackground": "#7442ad",
+    "tab.activeForeground": "#d3d2d4",
+  },
+  "workbench.iconTheme": "material-icon-theme",
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features",
+  },
+  "[markdown]": {
+    "editor.formatOnSave": false,
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  },
+  // Ruby は prettier では整形できないため ruby-lsp に振り分ける
+  // （これが無いと .rb の formatOnSave が黙って失敗する）
+  "[ruby]": {
+    "editor.defaultFormatter": "Shopify.ruby-lsp",
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "workbench.editor.pinnedTabsOnSeparateRow": true,
+  "hediet.vscode-drawio.resizeImages": null,
+  "claudeCode.preferredLocation": "panel",
+  "github.copilot.nextEditSuggestions.enabled": false,
+  "github.copilot.enable": {
+    "*": false,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false,
+    "ruby": false,
+  },
+  "editor.acceptSuggestionOnEnter": "off",
+  "explorer.confirmDragAndDrop": false,
+  "files.insertFinalNewline": true,
+  "terminal.integrated.enableMultiLinePasteWarning": "never",
+  "workbench.statusBar.visible": false,
+  "workbench.secondarySideBar.defaultVisibility": "hidden",
+  "explorer.fileNesting.patterns": {
+    "*.ts": "${capture}.js",
+    "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+    "*.jsx": "${capture}.js",
+    "*.tsx": "${capture}.ts",
+    "tsconfig.json": "tsconfig.*.json",
+    "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, bun.lock",
+    "*.sqlite": "${capture}.${extname}-*",
+    "*.db": "${capture}.${extname}-*",
+    "*.sqlite3": "${capture}.${extname}-*",
+    "*.db3": "${capture}.${extname}-*",
+    "*.sdb": "${capture}.${extname}-*",
+    "*.s3db": "${capture}.${extname}-*",
+  },
+
+  // ================================================================
+  // 保存時の後始末
+  // ================================================================
+  // 行末の余計な空白を落とす（差分に無駄な行が出なくなる）
+  "files.trimTrailingWhitespace": true,
+  // ファイル末尾の余分な空行を落とす
+  "files.trimFinalNewlines": true,
+  // 改行コードを LF に固定（Windows 環境と混ざっても差分が荒れない）
+  "files.eol": "\n",
+
+  // ================================================================
+  // エディタの見やすさ
+  // ================================================================
+  // 対応する括弧のペアだけを線で結ぶ
+  "editor.guides.bracketPairs": "active",
+  // 開始タグを直せば終了タグも一緒に変わる
+  "editor.linkedEditing": true,
+  // 目に見えない制御文字を表示する（コピペ混入の検出用）
+  "editor.renderControlCharacters": true,
+  // 未保存のタブを色で区別する
+  "workbench.editor.highlightModifiedTabs": true,
+  // 子が1つだけのフォルダをまとめて表示しない（パスを取り違えにくい）
+  "explorer.compactFolders": false,
+
+  // ================================================================
+  // 差分表示
+  // ================================================================
+  // 空白だけの変更も差分として表示する（既定では隠れて見落とす）
+  "diffEditor.ignoreTrimWhitespace": false,
+
+  // ================================================================
+  // 検索とファイル監視から外す（動作が軽くなる）
+  // ================================================================
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/coverage": true,
+    "**/tmp": true,
+    "**/log": true,
+    "**/vendor/bundle": true,
+    "**/.terraform": true,
+    "**/package-lock.json": true,
+    "**/yarn.lock": true,
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/coverage/**": true,
+    "**/tmp/**": true,
+    "**/.git/objects/**": true,
+    "**/vendor/bundle/**": true,
+    "**/.terraform/**": true,
+  },
+  // グローバル gitignore の内容も検索結果から外す
+  "search.useGlobalIgnoreFiles": true,
+
+  // ================================================================
+  // Git
+  // ================================================================
+  // 定期的に fetch してリモートとの差を出す
+  "git.autofetch": true,
+  // sync のたびに確認ダイアログを出さない
+  "git.confirmSync": false,
+  // fetch のときに削除済みリモートブランチも掃除する
+  "git.pruneOnFetch": true,
+
+  // ================================================================
+  // ターミナル
+  // ================================================================
+  // スクロールバックを増やす（長いログを遡れる）
+  "terminal.integrated.scrollback": 10000,
+}
