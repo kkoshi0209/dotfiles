@@ -341,6 +341,15 @@ bindkey '^[[3~' delete-char
 業務用の環境変数やその機体だけの `PATH` をここに逃がすことで、
 リポジトリ側に秘密情報を入れずに済む。**このファイルはリポジトリに入れない。**
 
+### PostgreSQL
+
+```zsh
+export PATH="/opt/homebrew/opt/postgresql@18/bin:$PATH"
+```
+
+Homebrew の `postgresql@18` は keg-only（他バージョンと衝突しないよう `PATH` に自動で入らない）なので、
+`psql` などのクライアントコマンドを使えるように明示的に `PATH` を通している。
+
 ---
 
 ## zsh/.gemrc
@@ -1016,7 +1025,7 @@ HashiCorp の公式リポジトリを追加する。`terraform` はここから�
 | パッケージ | 説明 |
 |---|---|
 | `gh` | GitHub の CLI。PR の作成やレビューをターミナルからできる |
-| `mysql` | MySQL サーバ / クライアント |
+| `postgresql@18` | PostgreSQL サーバ / クライアント。`.zshrc` で `PATH` を通している |
 | `node` | Node.js |
 | `openjdk@21` | Java 21 の開発キット |
 | `rbenv` | Ruby のバージョン管理。`.zshrc` で初期化している |

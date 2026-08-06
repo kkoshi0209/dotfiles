@@ -3,7 +3,7 @@ tap "hashicorp/tap"
 # GitHub command-line tool
 brew "gh"
 # Open source relational database management system
-brew "mysql"
+brew "postgresql@18"
 # Open-source, cross-platform JavaScript runtime environment
 brew "node"
 # Development kit for the Java programming language
