@@ -49,7 +49,7 @@ macOS の環境設定をまとめたもの。`git clone` して `./install.sh` �
    brew bundle --file=~/dotfiles/Brewfile
    ```
 
-   VS Code 拡張も一緒に入る。事前に VS Code 本体（と `code` コマンド）が必要。
+   VS Code 拡張も一緒に入る。事前に VS Code 本体が必要（`code` コマンドは `install.sh` が自動でリンクする）。
 
 5. **Ruby を入れる**
 

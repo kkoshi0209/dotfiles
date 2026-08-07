@@ -47,5 +47,23 @@ for entry in "${LINKS[@]}"; do
   echo "link    $dest -> $src"
 done
 
+# VS Code の "code" コマンドを PATH に通す。
+# 手動インストールした VS Code はこのコマンドが無いことがあり、そのまま
+# brew bundle を実行すると code を探しに行って visual-studio-code の cask を
+# 勝手に入れようとし、既存アプリと衝突して失敗する。事前にリンクしておくことで防ぐ。
+BREW_PREFIX="$(command -v brew >/dev/null 2>&1 && brew --prefix || echo /usr/local)"
+CODE_BIN="/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"
+CODE_LINK="$BREW_PREFIX/bin/code"
+
+if command -v code >/dev/null 2>&1; then
+  echo "ok      code ($(command -v code))"
+elif [ -x "$CODE_BIN" ]; then
+  mkdir -p "$(dirname "$CODE_LINK")"
+  ln -sfn "$CODE_BIN" "$CODE_LINK"
+  echo "link    $CODE_LINK -> $CODE_BIN"
+else
+  echo "skip    code (VS Code 本体が無い: $CODE_BIN)"
+fi
+
 echo
 echo "完了。次は: brew bundle --file=$DOTFILES/Brewfile"
