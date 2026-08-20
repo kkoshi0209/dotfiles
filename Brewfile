@@ -14,14 +14,19 @@ brew "rbenv"
 brew "yarn"
 # Tool to build, change, and version infrastructure
 brew "hashicorp/tap/terraform"
+# Agent multiplexer that lives in your terminal
+brew "herdr"
 
 # Terminal-based AI coding assistant
 cask "claude-code"
+# Terminal emulator that uses platform-native UI and GPU acceleration
+cask "ghostty"
 
 vscode "anthropic.claude-code"
 vscode "ecmel.vscode-html-css"
 vscode "esbenp.prettier-vscode"
 vscode "formulahendry.auto-rename-tag"
+vscode "hashicorp.terraform"
 vscode "hediet.vscode-drawio"
 vscode "ionutvmi.path-autocomplete"
 vscode "kaiwood.endwise"
