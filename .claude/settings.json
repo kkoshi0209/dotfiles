@@ -3,6 +3,9 @@
     "HERDR_ENV": "1"
   },
   "model": "sonnet",
+  "permissions": {
+    "defaultMode": "auto"
+  },
   "hooks": {
     "SessionStart": [
       {
