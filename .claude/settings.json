@@ -1,0 +1,22 @@
+{
+  "model": "sonnet",
+  "env": {
+    "HERDR_ENV": "1"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/k.koshi/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "tui": "fullscreen",
+  "theme": "dark"
+}

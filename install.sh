@@ -18,6 +18,9 @@ LINKS=(
   "git/gitignore_global:$HOME/.config/git/ignore"
   "vscode/settings.json:$HOME/Library/Application Support/Code/User/settings.json"
   "karabiner/karabiner.json:$HOME/.config/karabiner/karabiner.json"
+  ".claude/settings.json:$HOME/.claude/settings.json"
+  "ghostty/config:$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
+  "herdr/config.toml:$HOME/.config/herdr/config.toml"
 )
 
 for entry in "${LINKS[@]}"; do
