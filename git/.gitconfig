@@ -116,3 +116,5 @@
 # マシン固有・秘密情報（リポジトリ管理外。無くてもエラーにならない）
 [include]
 	path = ~/.gitconfig.local
+[http]
+	version = HTTP/2
