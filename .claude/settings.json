@@ -50,6 +50,18 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 '/Users/k.koshi/.claude/hooks/check-mermaid-br.py'",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   },
   "tui": "fullscreen",
