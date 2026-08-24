@@ -19,6 +19,7 @@ LINKS=(
   "vscode/settings.json:$HOME/Library/Application Support/Code/User/settings.json"
   "karabiner/karabiner.json:$HOME/.config/karabiner/karabiner.json"
   ".claude/settings.json:$HOME/.claude/settings.json"
+  ".claude/CLAUDE.md:$HOME/.claude/CLAUDE.md"
   "ghostty/config:$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
   "herdr/config.toml:$HOME/.config/herdr/config.toml"
 )
