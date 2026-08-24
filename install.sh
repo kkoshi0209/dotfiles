@@ -22,6 +22,7 @@ LINKS=(
   ".claude/CLAUDE.md:$HOME/.claude/CLAUDE.md"
   ".claude/skills/herdr-delegate:$HOME/.claude/skills/herdr-delegate"
   ".claude/skills/mermaid-rules:$HOME/.claude/skills/mermaid-rules"
+  ".claude/agents:$HOME/.claude/agents"
   "ghostty/config:$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
   "herdr/config.toml:$HOME/.config/herdr/config.toml"
 )
