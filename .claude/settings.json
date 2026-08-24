@@ -3,7 +3,6 @@
     "HERDR_ENV": "1"
   },
   "permissions": {
-    "defaultMode": "auto",
     "allow": [
       "Skill(update-config)",
       "Bash(herdr *)",
@@ -11,6 +10,21 @@
       "Bash(python3 -c ' *)",
       "Bash(git --version)",
       "Bash(git fetch *)",
+      "Bash(git status *)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git show *)",
+      "Bash(git branch *)",
+      "Bash(git worktree list)",
+      "Bash(rg *)",
+      "Bash(ls *)",
+      "Bash(wc *)",
+      "Bash(sed -n *)",
+      "Bash(uuidgen)",
+      "Bash(* --version)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr list *)",
+      "Bash(gh issue view *)",
       "Bash(backlog --version)",
       "Bash(backlog task *)",
       "Bash(backlog doc *)",
@@ -19,7 +33,9 @@
       "Bash(backlog schedule *)",
       "Bash(npx backlog *)",
       "WebSearch"
-    ]
+    ],
+    "deny": ["Bash(herdr server stop*)"],
+    "defaultMode": "auto"
   },
   "model": "sonnet",
   "hooks": {
