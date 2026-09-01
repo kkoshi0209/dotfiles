@@ -34,10 +34,12 @@
       "Bash(npx backlog *)",
       "WebSearch"
     ],
-    "deny": ["Bash(herdr server stop*)"],
+    "deny": [
+      "Bash(herdr server stop*)"
+    ],
     "defaultMode": "auto"
   },
-  "model": "sonnet",
+  "model": "opus[1m]",
   "hooks": {
     "SessionStart": [
       {
