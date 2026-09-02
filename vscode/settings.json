@@ -198,4 +198,5 @@
     "switch:command",
   ],
   "cSpell.userWords": ["atobarai"],
+  "extensions.ignoreRecommendations": true,
 }
