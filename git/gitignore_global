@@ -78,6 +78,8 @@ crash.log
 # Ruby
 .byebug_history
 .ruby-gemset
+# ruby-lsp が解析用に各リポジトリ直下へ作るキャッシュ(2026-09-02)
+.ruby-lsp/
 
 # Node
 .npm/

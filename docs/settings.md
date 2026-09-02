@@ -658,7 +658,7 @@ EOF
 | `editor.acceptSuggestionOnEnter: "off"` | **Enter で補完候補を確定しない**（改行と誤爆しない） |
 | `explorer.confirmDragAndDrop: false` | ファイルのドラッグ移動時に確認しない |
 | `files.insertFinalNewline: true` | ファイル末尾に改行を1つ入れる |
-| `workbench.statusBar.visible: false` | 下部のステータスバーを隠す |
+| `workbench.statusBar.visible: true` | 下部のステータスバーを表示する（**2026-09-02、`false` から変更**。下記「aftee ワークスペース固有の構成」参照） |
 | `workbench.secondarySideBar.defaultVisibility: "hidden"` | 右サイドバーを既定で隠す |
 | `explorer.fileNesting.patterns` | 関連ファイルをエクスプローラ上で入れ子表示する |
 
@@ -754,12 +754,19 @@ git 上では差分が出ているのに VS Code では見えないという食�
 ```jsonc
 "[ruby]": {
   "editor.defaultFormatter": "Shopify.ruby-lsp",
+  "editor.formatOnSave": false,
 }
 ```
 
-**これが無いと `.rb` の保存時整形が黙って失敗する。**
+**振り分けが無いと `.rb` の保存時整形が黙って失敗する。**
 `editor.defaultFormatter` が Prettier になっているが、Prettier は Ruby を扱えない。
 `formatOnSave` が有効でもエラーにならず何も起きないため、原因に気付きにくい。
+
+**`editor.formatOnSave` を `false` にしているのは 2026-09-02 の変更。**
+ruby-lsp 拡張は Ruby 3.0 以上でしか動かないため、それを含む Profile は1つだけにしている。
+他のワークスペースで有効なままだと、上記の「黙って失敗する」状態がそこで再発する。
+そこで**既定を `false` にし、ruby-lsp を入れたワークスペース側でだけ `true` に戻す**
+という形にした。既定を閉じておけば、新しいワークスペースを足したときも事故らない。
 
 ```jsonc
 "[erb]": {
@@ -956,7 +963,27 @@ ruby-lsp が `Gemfile` / `Rakefile` / `*.rake` / `*.jbuilder` / `*.gemspec` な�
 | `files.associations` で `*.html.erb` → `erb` | 拡張子の判定で既に `erb` になるため不要 |
 | `editor.codeActionsOnSave` で rubocop 自動修正 | ruby-lsp の formatOnSave が既に rubocop の整形を通す。二重にかけると保存が重くなる |
 
----
+### 業務用ワークスペース固有の構成
+
+このマシンでは業務用のワークスペースを役割ごとに分割し、VS Code の Profile で
+拡張機能セットを切り替えている。**この設定ファイルはその全 Profile の共通土台**として働く。
+
+設計の詳細（ワークスペースの分け方・Profile ごとの拡張機能・言語サーバの構成）は
+業務内容を含むため別の private リポジトリで管理している。
+
+このファイルに入れている設定のうち、その構成を前提にしているものは次の2つ。
+
+- `[ruby]` の `editor.formatOnSave` を**既定で `false`** にしている。Ruby の言語サーバは
+  Ruby 3.0 以上でしか動かず、それを含む Profile は1つだけなので、既定を閉じておかないと
+  他の Profile で保存時整形が黙って失敗する。有効にするワークスペース側で `true` に戻す
+- `workbench.statusBar.visible` を `true` にしている。ウィンドウを複数開く運用では、
+  言語サーバの状態・問題の件数・ブランチ名がステータスバーにしか出ないため
+
+> `.code-workspace` の `settings` は **window スコープまで書ける**（machine スコープは不可）。
+> 「resource スコープのみ」という制約はフォルダ単位の `.vscode/settings.json` に対するもので、
+> ワークスペースファイルには当てはまらない。だから `workbench.colorCustomizations` や
+> `workbench.statusBar.visible` をワークスペースごとに変えられる。
+
 
 ## karabiner/karabiner.json
 
@@ -1040,15 +1067,26 @@ HashiCorp の公式リポジトリを追加する。`terraform` はここから�
 
 ### vscode（拡張機能）
 
-18 個。`brew bundle` が `code --install-extension` を呼んで一括で入れる。
+23 個。`brew bundle` が `code --install-extension` を呼んで一括で入れる。
+
+> **`brew bundle` と Profile の関係（2026-09-02）**
+> `brew bundle` は**そのとき有効になっている Profile** に拡張を入れる。
+> 現在は拡張の有効・無効を Profile で振り分ける構成なので、
+> PC 移行時は Default Profile を開いた状態で実行し、そのあと Profile 側に振り分ける。
+> Brewfile は「マシンに入れておく拡張の全集合」を表すだけで、
+> どの Profile でどれを有効にするかは表現できない（Brewfile 側にもコメントで注記済み）。
 
 | 拡張 | 用途 |
 |---|---|
 | `anthropic.claude-code` | Claude Code の VS Code 統合 |
+| `eamodio.gitlens` | 行ごとの blame・Commit Graph・履歴の探索 |
 | `esbenp.prettier-vscode` | コードフォーマッタ。`editor.defaultFormatter` に指定している |
-| `shopify.ruby-lsp` | Ruby の言語サーバ。`[ruby]` のフォーマッタに指定している |
+| `shopify.ruby-lsp` | Ruby の言語サーバ。`[ruby]` のフォーマッタに指定している（Ruby 3.x のみ） |
+| `castwide.solargraph` | 古い Ruby 向けの言語サーバ。実行環境は業務用の private リポジトリで管理 |
+| `misogi.ruby-rubocop` | 古い RuboCop を CLI で呼ぶ（LSP モードが無い版向け） |
+| `hridoy.rails-snippets` | Rails のスニペット |
+| `ms-vsliveshare.vsliveshare` | 共同編集 |
 | `pkief.material-icon-theme` | ファイルアイコン。`workbench.iconTheme` に指定している |
-| `mhutchie.git-graph` | コミット履歴をグラフで見る |
 | `hediet.vscode-drawio` | VS Code 内で draw.io の図を編集する |
 | `ms-ceintl.vscode-language-pack-ja` | UI の日本語化 |
 | `ecmel.vscode-html-css` | HTML から CSS のクラス名を補完する |
@@ -1071,6 +1109,12 @@ cd ~/dotfiles && brew bundle dump --vscode --force
 
 現在の状態で Brewfile を作り直す。`--force` は既存ファイルの上書きを許可する指定。
 差分を確認してからコミットする。
+
+**ただし 2026-09-02 以降、このコマンドは使いにくくなっている。**
+`dump` は Brewfile を丸ごと書き直すため、Profile の対応を書いたコメントが消える。
+加えて書き出されるのは**そのとき有効な Profile の拡張だけ**なので、
+たとえば「Ruby 2.5」Profile で実行すると ruby-lsp や terraform が Brewfile から落ちる。
+拡張を追加・削除したときは `dump` ではなく **`vscode "..."` の行を手で足す / 消す**方が安全。
 
 ### GitHub Copilot について
 
