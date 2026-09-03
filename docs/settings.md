@@ -981,8 +981,9 @@ ruby-lsp が `Gemfile` / `Rakefile` / `*.rake` / `*.jbuilder` / `*.gemspec` な�
 
 > `.code-workspace` の `settings` は **window スコープまで書ける**（machine スコープは不可）。
 > 「resource スコープのみ」という制約はフォルダ単位の `.vscode/settings.json` に対するもので、
-> ワークスペースファイルには当てはまらない。だから `workbench.colorCustomizations` や
-> `workbench.statusBar.visible` をワークスペースごとに変えられる。
+> ワークスペースファイルには当てはまらない。`workbench.colorTheme` にもスコープ指定が無く
+> window スコープ扱いなので、**ウィンドウの識別はワークスペースごとのテーマで行っている**
+> （2026-09-03、`workbench.colorCustomizations` で titleBar を直接上書きする方式から変更）。
 
 
 ## karabiner/karabiner.json
@@ -1034,6 +1035,60 @@ Karabiner が OS に見せる仮想キーボードの種類を ANSI（US 配列�
 
 ---
 
+## ghostty/config
+
+ターミナルエミュレータ Ghostty の設定。
+`~/Library/Application Support/com.mitchellh.ghostty/config.ghostty` にリンクされる。
+
+| 設定 | 値 | 理由 |
+|---|---|---|
+| `theme` | `tokyonight` | 同梱テーマ |
+| `font-family` | `JetBrains Mono` → `BIZ UDGothic Bold` | 2行書くと**先に書いた方が優先**され、そのフォントに無い字形（日本語）が次の行にフォールバックする。英数字は JetBrains Mono、日本語は BIZ UDGothic になる |
+| `font-thicken` | `true` | macOS のアンチエイリアスで細く見えるのを補正する |
+| `background-opacity` / `background-blur-radius` | `0.7` / `20` | 背景を透過しつつ、後ろの文字が透けて読みにくくならないようぼかす |
+| `unfocused-split-opacity` | `0.7` | 非アクティブなペインを暗くして、いまどのペインを触っているかを見失わないようにする |
+| `window-padding-*` | `10` / `balance` | 端末の縁と文字が接する圧迫感を減らす。`balance` は余りを上下左右へ均等に配る |
+| `macos-titlebar-style` | `transparent` | タイトルバーを背景となじませる |
+| `mouse-hide-while-typing` | `true` | 入力中にポインタが文字に重なるのを防ぐ |
+| `copy-on-select` | `true` | 選択しただけでクリップボードへ入る |
+| `clipboard-read` / `clipboard-write` | `allow` | 端末アプリからのクリップボード操作を許可する。既定は確認ダイアログが出る |
+
+キーバインドは3つだけ上書きしている。
+
+| キー | 動作 | 理由 |
+|---|---|---|
+| `cmd+enter` | 下に分割 | 既定では未割り当て |
+| `cmd+shift+enter` | 右に分割 | 同上 |
+| `cmd+w` | `close_surface` | 既定ではウィンドウごと閉じてしまうことがある。ペイン単位で閉じる方を優先する |
+
+---
+
+## herdr/config.toml
+
+コーディングエージェント用のターミナルマルチプレクサ herdr の設定。
+`~/.config/herdr/config.toml` にリンクされる。
+
+複数のエージェントを並行して走らせ、その間を行き来する運用を前提に既定値を変えている。
+
+| 設定 | 値 | 理由 |
+|---|---|---|
+| `onboarding` | `false` | 初回ガイドを出さない |
+| `keys.previous_agent` / `next_agent` / `focus_agent` | `prefix+alt+p` / `n` / `1..9` | **既定では未割り当て**。エージェントを行き来する運用では必須級 |
+| `keys.switch_workspace` | `prefix+shift+1..9` | ワークスペースの直接切り替え |
+| `keys.last_pane` | `prefix+tab` | 司令塔 ↔ 委任先の往復 |
+| `keys.open_worktree` | `prefix+alt+g` | worktree を開く。**`remove_worktree` は誤操作が怖いので意図的に割り当てていない** |
+| `ui.agent_panel_sort` | `priority` | 注意が必要な（blocked の）エージェントを取りこぼさない並び |
+| `ui.show_agent_labels_on_pane_borders` | `true` | 1タブに複数エージェントを並べたとき、どのペインが誰かをペイン枠に出す |
+| `ui.hide_tab_bar_when_single_tab` | `true` | ペインが縦に潰れる状況で1行稼ぐ |
+| `ui.sidebar.agents.rows_by_agent.claude` | 3行構成 | `terminal_title_stripped` に Claude 自身のタスク要約（または `--name`）が入るので、「どの委任先が今どのサブタスクをやっているか」をサイドバーで一覧できる |
+| `ui.toast.delivery` | `system` | 既定 `off` のままだと `herdr notification show` が `{"shown":false,"reason":"disabled"}` で何もしない |
+| `experimental.switch_ascii_input_source_in_prefix` | `true` | 日本語入力（IME）有効時でも `prefix+n` などが通るようにする |
+| `experimental.reveal_hidden_cursor_for_cjk_ime` ほか | `true` / `["claude"]` / `steady_block` | Claude Code は自前でカーソルを描くため、macOS の IME 候補ウィンドウが追従しない。これを補正する |
+| `experimental.pane_history` | `true` | サーバ再起動をまたいで直近のペイン画面履歴を残す |
+| `advanced.scrollback_limit_bytes` | `40000000` | `pane run` で走らせたテスト / ビルドのログ用。**Claude Code のような alternate screen アプリには効かない** |
+
+---
+
 ## Brewfile
 
 `brew bundle` が読むパッケージ一覧。`brew bundle --file=~/dotfiles/Brewfile` で一括インストールできる。
@@ -1067,14 +1122,16 @@ HashiCorp の公式リポジトリを追加する。`terraform` はここから�
 
 ### vscode（拡張機能）
 
-23 個。`brew bundle` が `code --install-extension` を呼んで一括で入れる。
+24 個。`brew bundle` が `code --install-extension` を呼んで一括で入れる。
+ファイル内は拡張 ID のアルファベット順で並べている（Profile ごとの振り分けは
+Brewfile では表現できないため、並び順に意味を持たせていない）。
 
 > **`brew bundle` と Profile の関係（2026-09-02）**
 > `brew bundle` は**そのとき有効になっている Profile** に拡張を入れる。
 > 現在は拡張の有効・無効を Profile で振り分ける構成なので、
 > PC 移行時は Default Profile を開いた状態で実行し、そのあと Profile 側に振り分ける。
 > Brewfile は「マシンに入れておく拡張の全集合」を表すだけで、
-> どの Profile でどれを有効にするかは表現できない（Brewfile 側にもコメントで注記済み）。
+> どの Profile でどれを有効にするかは表現できない。
 
 | 拡張 | 用途 |
 |---|---|
@@ -1087,6 +1144,7 @@ HashiCorp の公式リポジトリを追加する。`terraform` はここから�
 | `hridoy.rails-snippets` | Rails のスニペット |
 | `ms-vsliveshare.vsliveshare` | 共同編集 |
 | `pkief.material-icon-theme` | ファイルアイコン。`workbench.iconTheme` に指定している |
+| `whizkydee.material-palenight-theme` | カラーテーマ。ワークスペースごとに `workbench.colorTheme` で使い分ける |
 | `hediet.vscode-drawio` | VS Code 内で draw.io の図を編集する |
 | `ms-ceintl.vscode-language-pack-ja` | UI の日本語化 |
 | `ecmel.vscode-html-css` | HTML から CSS のクラス名を補完する |
@@ -1111,8 +1169,7 @@ cd ~/dotfiles && brew bundle dump --vscode --force
 差分を確認してからコミットする。
 
 **ただし 2026-09-02 以降、このコマンドは使いにくくなっている。**
-`dump` は Brewfile を丸ごと書き直すため、Profile の対応を書いたコメントが消える。
-加えて書き出されるのは**そのとき有効な Profile の拡張だけ**なので、
+書き出されるのは**そのとき有効な Profile の拡張だけ**なので、
 たとえば「Ruby 2.5」Profile で実行すると ruby-lsp や terraform が Brewfile から落ちる。
 拡張を追加・削除したときは `dump` ではなく **`vscode "..."` の行を手で足す / 消す**方が安全。
 

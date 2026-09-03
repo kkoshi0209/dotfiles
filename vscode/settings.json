@@ -1,53 +1,38 @@
 {
-  // 新規ウィンドウを最後に開いたウィンドウと同じサイズで開く
+  // 各設定の理由は dotfiles/docs/settings.md「vscode/settings.json」を参照
   "window.newWindowDimensions": "inherit",
-  // タブ幅指定
   "editor.tabSize": 2,
-  // 空白文字を可視化。none, all, boundary：単語間の単一スペースは可視化しない。
   "editor.renderWhitespace": "boundary",
   "workbench.colorCustomizations": {
     "tab.activeBackground": "#7442ad",
-    "tab.activeForeground": "#d3d2d4"
+    "tab.activeForeground": "#d3d2d4",
   },
   "workbench.iconTheme": "material-icon-theme",
   "[html]": {
-    "editor.defaultFormatter": "vscode.html-language-features"
+    "editor.defaultFormatter": "vscode.html-language-features",
   },
   "[markdown]": {
-    "editor.formatOnSave": false
+    "editor.formatOnSave": false,
   },
   "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
   },
-  // Ruby は prettier では整形できないため ruby-lsp に振り分ける
-  // （これが無いと .rb の formatOnSave が黙って失敗する）
   "[ruby]": {
     "editor.defaultFormatter": "Shopify.ruby-lsp",
-    // 保存時整形は既定で切っておき、ruby-lsp を含む Profile のワークスペース側で
-    // true に戻す。ruby-lsp は Ruby 3.0 以上でしか動かないため、
-    // 古い Ruby のプロジェクトで有効なままにすると defaultFormatter が解決できず、
-    // 保存時整形が黙って失敗する。既定を false にしておけば事故らない。
     "editor.formatOnSave": false,
-    // 既定値から @ $ ? ! を除いた。ダブルクリックで @user / valid? / $stdout を
-    // 丸ごと選択できるようになる（既定ではこれらの記号で切れる）
-    "editor.wordSeparators": "`~#%^&*()-=+[{]}\\|;:'\",.<>/"
+    "editor.wordSeparators": "`~#%^&*()-=+[{]}\\|;:'\",.<>/",
   },
-  // Terraform。全体の既定フォーマッタが prettier なので、
-  // ここで振り分けないと .tf の保存時整形が黙って失敗する(2026-09-02)
   "[terraform]": {
     "editor.defaultFormatter": "hashicorp.terraform",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
   },
   "[terraform-vars]": {
     "editor.defaultFormatter": "hashicorp.terraform",
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
   },
-  // ERB を整形できるフォーマッタが入っていないため、保存時整形を止める。
-  // 有効なままだと prettier が呼ばれて黙って失敗する。
-  // 整形したい場合は拡張 aliariff.vscode-erb-beautify を入れて true に戻す。
   "[erb]": {
     "editor.formatOnSave": false,
-    "editor.wordSeparators": "`~#%^&*()-=+[{]}\\|;:'\",.<>/"
+    "editor.wordSeparators": "`~#%^&*()-=+[{]}\\|;:'\",.<>/",
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
@@ -58,8 +43,6 @@
   "explorer.confirmDragAndDrop": false,
   "files.insertFinalNewline": true,
   "terminal.integrated.enableMultiLinePasteWarning": "never",
-  // 2026-09-02、非表示から表示に戻した。言語サーバの状態・問題の件数・ブランチ名は
-  // ここにしか出ないため、非表示だと言語サーバが黙って死んでいても気づけない。
   "workbench.statusBar.visible": true,
   "workbench.secondarySideBar.defaultVisibility": "hidden",
   "explorer.fileNesting.patterns": {
@@ -75,64 +58,22 @@
     "*.db3": "${capture}.${extname}-*",
     "*.sdb": "${capture}.${extname}-*",
     "*.s3db": "${capture}.${extname}-*",
-    // Rails
     "Gemfile": "Gemfile.lock, .ruby-version, .ruby-gemset, .tool-versions",
     ".rubocop.yml": ".rubocop_todo.yml",
     "docker-compose.yml": "docker-compose.*.yml, Dockerfile*, .dockerignore",
     ".env": ".env.*",
-    "README.md": "LICENSE*, CHANGELOG*, CONTRIBUTING*, CODE_OF_CONDUCT*"
+    "README.md": "LICENSE*, CHANGELOG*, CONTRIBUTING*, CODE_OF_CONDUCT*",
   },
-
-  // ================================================================
-  // ウィンドウの識別（ワークスペースを複数使う運用）
-  // ================================================================
-  // 2026-09-02、作業用のワークスペースを役割別に分割したのに合わせて組み替えた。
-  // 旧: "${folderName}${separator}${activeEditorShort}${separator}${appName}"
-  //     （ワークスペースが1枚だけだった頃は ${rootName} が固定値で
-  //       意味を持たないため、ルートフォルダ名 ${folderName} を使っていた）
-  // 新: ワークスペースを複数に分けて ${rootName} が識別に使えるようになった。
-  //     加えて ${activeRepositoryBranchName} でブランチ名も出す
-  //     （マルチルートで複数リポジトリを1ウィンドウに入れると
-  //       「どのリポジトリのどのブランチを触っているか」が分からなくなりやすい）。
-  // 例: ● user.rb - my-repo - develop - my-workspace
   "window.title": "${dirty}${activeEditorShort}${separator}${activeRepositoryName}${separator}${activeRepositoryBranchName}${separator}${rootName}",
-
-  // ================================================================
-  // 保存時の後始末
-  // ================================================================
-  // 行末の余計な空白を落とす（差分に無駄な行が出なくなる）
   "files.trimTrailingWhitespace": true,
-  // ファイル末尾の余分な空行を落とす
   "files.trimFinalNewlines": true,
-  // 改行コードを LF に固定（Windows 環境と混ざっても差分が荒れない）
   "files.eol": "\n",
-
-  // ================================================================
-  // エディタの見やすさ
-  // ================================================================
-  // 対応する括弧のペアだけを線で結ぶ
   "editor.guides.bracketPairs": "active",
-  // 開始タグを直せば終了タグも一緒に変わる
   "editor.linkedEditing": true,
-  // 目に見えない制御文字を表示する（コピペ混入の検出用）
   "editor.renderControlCharacters": true,
-  // 未保存のタブを色で区別する
   "workbench.editor.highlightModifiedTabs": true,
-  // 子が1つだけのフォルダをまとめて表示しない（パスを取り違えにくい）
   "explorer.compactFolders": false,
-
-  // ================================================================
-  // 差分表示
-  // ================================================================
-  // 空白だけの変更も差分として表示する（既定では隠れて見落とす）
   "diffEditor.ignoreTrimWhitespace": false,
-
-  // ================================================================
-  // 検索とファイル監視から外す（動作が軽くなる）
-  // ================================================================
-  // エクスプローラからも消す（files.exclude は検索にも効く）。
-  // 2026-09-02、ワークスペースファイル側からここへ移した。
-  // 全ワークスペースに効かせるため、重複管理を避けてここに置く。
   "files.exclude": {
     "**/.git": true,
     "**/tmp": true,
@@ -140,17 +81,12 @@
     "**/coverage": true,
     "**/.bundle": true,
     "**/vendor/bundle": true,
-    // Terraform のプロバイダキャッシュ。1リポジトリで数百MBになるので必ず除外
     "**/.terraform": true,
     "**/node_modules": true,
-    // Next.js / Storybook / fumadocs-mdx のビルド生成物。いずれも .gitignore 済みで
-    // 中身は自動生成のみなので、エクスプローラにも検索にも出さない(2026-09-01)
     "**/.next": true,
     "**/storybook-static": true,
-    // fumadocs-mdx が content/docs から生成する中間ファイル
     "**/.source": true,
-    // ruby-lsp が解析用に作るキャッシュ
-    "**/.ruby-lsp": true
+    "**/.ruby-lsp": true,
   },
   "search.exclude": {
     "**/node_modules": true,
@@ -162,7 +98,6 @@
     "**/.terraform": true,
     "**/package-lock.json": true,
     "**/yarn.lock": true,
-    // Rails
     "**/vendor/bundle": true,
     "**/.bundle": true,
     "**/storage": true,
@@ -172,12 +107,10 @@
     "**/app/assets/builds": true,
     "**/db/*.sqlite3*": true,
     "**/Gemfile.lock": true,
-    // 以下は 2026-09-02 にワークスペースファイル側から移した
     "**/*.lock": true,
     "**/.terraform.lock.hcl": true,
-    "**/*.xlsx": true
+    "**/*.xlsx": true,
   },
-  // 言語サーバ用に張った symlink を検索が辿らないようにする
   "search.followSymlinks": false,
   "files.watcherExclude": {
     "**/node_modules/**": true,
@@ -187,7 +120,6 @@
     "**/tmp/**": true,
     "**/.git/objects/**": true,
     "**/.terraform/**": true,
-    // Rails。log/ は development.log が常時書き変わるので監視から外す効果が大きい
     "**/log/**": true,
     "**/vendor/bundle/**": true,
     "**/.bundle/**": true,
@@ -195,91 +127,43 @@
     "**/public/assets/**": true,
     "**/public/packs/**": true,
     "**/app/assets/builds/**": true,
-    // 以下は 2026-09-02 に追加
-    // next dev 中は .next/ が高頻度で書き換わるため必ず監視対象外にする
     "**/.next/**": true,
     "**/storybook-static/**": true,
     "**/.source/**": true,
-    // LSP が作るキャッシュ・専用bundle
     "**/.ruby-lsp/**": true,
-    "**/.lsp/**": true
+    "**/.lsp/**": true,
   },
-  // グローバル gitignore の内容も検索結果から外す
   "search.useGlobalIgnoreFiles": true,
-
-  // ================================================================
-  // Git
-  // ================================================================
-  // 定期的に fetch してリモートとの差を出す
   "git.autofetch": true,
-  // 既定は180秒。マルチルートで十数リポジトリを同時に fetch するため
-  // 間隔を伸ばす(2026-09-02)
   "git.autofetchPeriod": 600,
-  // sync のたびに確認ダイアログを出さない
   "git.confirmSync": false,
-  // fetch のときに削除済みリモートブランチも掃除する
   "git.pruneOnFetch": true,
-  // 以下は 2026-09-02 にワークスペースファイル側から移した。
-  // 複数リポジトリぶんのソース管理ビューが並び「どのリポジトリで作業中か」を
-  // 誤りやすいので、main/master への直コミットを予防する。
-  // 個人リポジトリ(dotfiles / backlog)は main 直コミットが正なので、
-  // プロンプトが煩わしければ personal.code-workspace 側で [] に上書きする。
   "git.branchProtection": ["main", "master"],
   "git.branchProtectionPrompt": "alwaysPrompt",
-  // 親フォルダ(gitリポジトリではない作業ディレクトリ)をリポジトリとして開くか毎回聞かれるのを止める
   "git.openRepositoryInParentFolders": "never",
-
-  // ================================================================
-  // ターミナル
-  // ================================================================
-  // スクロールバックを増やす（長いログを遡れる）
   "terminal.integrated.scrollback": 10000,
-
-  // ================================================================
-  // Ruby LSP
-  // ================================================================
-  // この設定が効くのは ruby-lsp を入れた Profile のワークスペースだけ。
-  // ruby-lsp は Ruby 3.0 以上を要求するため、それより古い Ruby のプロジェクトでは
-  // 別の言語サーバを使う（その構成は業務用の private リポジトリ側で管理している）。
-  //
-  // Ruby のバージョンマネージャを明示する。auto でも当たることが多いが、
-  // 外すと「Ruby が見つからない」で LSP が起動しないことがある。
   "rubyLsp.rubyVersionManager": {
-    "identifier": "rbenv"
+    "identifier": "rbenv",
   },
-  // rubyLsp.formatter は既定の "auto" のまま。プロジェクトの Gemfile を見て
-  // rubocop / standard / syntax_tree を自動で選ぶ。ここで "rubocop" と固定すると
-  // rubocop を使っていないリポジトリでエラーになる。
-  //
-  // ruby-lsp の意味解析による色分けを効かせる
-  // （既定の configuredByTheme だとテーマ次第で無効になる）
   "editor.semanticHighlighting.enabled": true,
-
-  // ================================================================
-  // Rails
-  // ================================================================
-  // ERB で Emmet を使えるようにする（div.card>ul>li*3 → Tab で展開）
   "emmet.includeLanguages": {
-    "erb": "html"
+    "erb": "html",
   },
-  // Rails は同じファイル名が大量に出るため、タブに親ディレクトリ名も出す。
-  // index.html.erb が並ぶ代わりに users/index.html.erb と表示される。
   "workbench.editor.customLabels.patterns": {
     "**/app/views/**/*": "${dirname}/${filename}.${extname}",
     "**/spec/**/*_spec.rb": "${dirname}/${filename}.${extname}",
-    "**/test/**/*_test.rb": "${dirname}/${filename}.${extname}"
+    "**/test/**/*_test.rb": "${dirname}/${filename}.${extname}",
   },
   "files.associations": {
-    // Homebrew の Brewfile は Ruby の DSL
     "Brewfile": "ruby",
-    ".simplecov": "ruby"
+    ".simplecov": "ruby",
   },
   "gitlens.graph.details.location": "auto",
   "gitlens.gitCommands.skipConfirmations": [
     "fetch:command",
     "stash-push:command",
-    "switch:command"
+    "switch:command",
   ],
   "cSpell.userWords": ["atobarai"],
-  "extensions.ignoreRecommendations": true
+  "extensions.ignoreRecommendations": true,
 }

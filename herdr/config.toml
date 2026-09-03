@@ -1,45 +1,32 @@
+# 各設定の理由は dotfiles/docs/settings.md「herdr/config.toml」を参照
 onboarding = false
 
 [keys]
-# 既定では未割り当て。複数エージェントを行き来する運用では必須級
 previous_agent = "prefix+alt+p"
 next_agent = "prefix+alt+n"
 focus_agent = "prefix+alt+1..9"
 switch_workspace = "prefix+shift+1..9"
-last_pane = "prefix+tab"          # 司令塔 ↔ 委任先の往復
+last_pane = "prefix+tab"
 open_worktree = "prefix+alt+g"
-# remove_worktree は誤操作が怖いので割り当てない
 
 [ui]
-# 注意が必要な(blocked の)エージェントを取りこぼさない並び
 agent_panel_sort = "priority"
-# 1タブに複数エージェントを並べたとき、どのペインが誰かをペイン枠に出す
 show_agent_labels_on_pane_borders = true
-# ペインが縦に潰れる状況で1行稼ぐ
 hide_tab_bar_when_single_tab = true
 
-# terminal_title_stripped に Claude 自身のタスク要約(または --name)が入るので、
-# 「どの委任先が今どのサブタスクをやっているか」がサイドバーで一覧できる
 [ui.sidebar.agents.rows_by_agent]
 claude = [["state_icon", "workspace", "tab"], ["terminal_title_stripped"], ["agent"]]
 
 [ui.toast]
-# 既定 "off" のままだと herdr notification show が
-# {"shown":false,"reason":"disabled"} で何もしない
 delivery = "system"
 delay_seconds = 1
 
 [experimental]
-# 日本語入力(IME)有効時でも prefix+n 等が通るようにする
 switch_ascii_input_source_in_prefix = true
-# Claude Code は自前でカーソルを描くため、macOS の IME 候補ウィンドウが追従しない
 reveal_hidden_cursor_for_cjk_ime = true
 cjk_ime_agents = ["claude"]
 cjk_ime_cursor_shape = "steady_block"
-# サーバ再起動をまたいで直近のペイン画面履歴を残す
 pane_history = true
 
 [advanced]
-# pane run で走らせたテスト/ビルドのログ用。
-# Claude Code のような alternate screen アプリには効かない
 scrollback_limit_bytes = 40000000

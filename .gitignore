@@ -1,20 +1,9 @@
-# install.sh が退避した元ファイル
+# 各項目の説明は dotfiles/docs/settings.md「.gitignore（リポジトリ自身）」を参照
 *.bak
-
-# マシン固有・秘密情報の逃がし先
 *.local
-
 .DS_Store
-
-# gh の OAuth トークンが入る（絶対にコミットしない）
 **/hosts.yml
-
-# karabiner の自動バックアップ（ノイズ）
 **/automatic_backups/
-
-# zsh の補完キャッシュ（自動生成）
 .zcompdump*
-
-# Claude Code の作業ファイル
 **/.claude/.cc-writes/
 **/.claude/settings.local.json

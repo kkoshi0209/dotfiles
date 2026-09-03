@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
-#
-# dotfiles のシンボリックリンクを張る。
-# 何度実行しても同じ結果になる（冪等）。
-#
+# 設計と冪等性の説明は dotfiles/docs/settings.md「install.sh」を参照
 set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 
 # "リポジトリ内の相対パス:リンクを作る場所"
-# リンク先に空白は含まれうるが : は含まれないので : を区切りに使う
 LINKS=(
   "zsh/.zshrc:$HOME/.zshrc"
   "zsh/.zprofile:$HOME/.zprofile"
@@ -44,7 +40,6 @@ for entry in "${LINKS[@]}"; do
       echo "ok      $dest"
       continue
     fi
-    # 別の場所を指すリンクは中身を持たないので退避せず張り替える
     echo "relink  $dest"
   elif [ -e "$dest" ]; then
     mv "$dest" "$dest.$STAMP.bak"
@@ -55,10 +50,6 @@ for entry in "${LINKS[@]}"; do
   echo "link    $dest -> $src"
 done
 
-# VS Code の "code" コマンドを PATH に通す。
-# 手動インストールした VS Code はこのコマンドが無いことがあり、そのまま
-# brew bundle を実行すると code を探しに行って visual-studio-code の cask を
-# 勝手に入れようとし、既存アプリと衝突して失敗する。事前にリンクしておくことで防ぐ。
 BREW_PREFIX="$(command -v brew >/dev/null 2>&1 && brew --prefix || echo /usr/local)"
 CODE_BIN="/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"
 CODE_LINK="$BREW_PREFIX/bin/code"

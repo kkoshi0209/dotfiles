@@ -1,86 +1,64 @@
+# 各設定の理由は dotfiles/docs/settings.md「git/.gitconfig」を参照
 [user]
 	name = kkoshi0209
 	email = doradorayuji@gmail.com
 
 [core]
 	excludesfile = ~/.config/git/ignore
-	# 日本語ファイル名を \346\227... ではなくそのまま表示する
 	quotepath = false
-	# macOS が濁点を分解して保存する問題を吸収する（NFD -> NFC）
 	precomposeunicode = true
-	# 未追跡ファイルの走査結果をキャッシュして git status を速くする
 	untrackedCache = true
 
 [init]
 	defaultBranch = main
 
 [column]
-	# branch や tag の一覧を端末幅に合わせて多段組みで出す
 	ui = auto
 
 [branch]
-	# git branch を「最近コミットした順」に並べる
 	sort = -committerdate
 
 [tag]
-	# v2 と v10 を辞書順ではなくバージョン順に並べる
 	sort = version:refname
 
 [push]
 	default = simple
-	# 新規ブランチの初回 push で -u を書かなくて済む
 	autoSetupRemote = true
-	# コミットに紐づくタグも一緒に push する
 	followTags = true
 
 [fetch]
-	# 削除済みのリモートブランチをローカルからも消す
 	prune = true
 	pruneTags = true
-	# git fetch で全リモートを取りに行く
 	all = true
 
 [pull]
-	# merge コミットを作る従来の挙動。挙動を明示して事故を防ぐ。
-	# rebase 派に転向するときは true にする。
 	rebase = false
 
 [diff]
-	# 移動した関数などの差分が読みやすくなるアルゴリズム
 	algorithm = histogram
-	# 移動しただけの行を別色で示す
 	colorMoved = plain
-	# a/ b/ ではなく i/(index) w/(work tree) c/(commit) を接頭辞に使う
 	mnemonicPrefix = true
 	renames = true
 
 [merge]
-	# 衝突時にマージ元だけでなく「共通の祖先」も表示する（git 2.35+）
 	conflictstyle = zdiff3
 
 [rerere]
-	# 一度解決した衝突の解き方を覚えて次回は自動適用する
 	enabled = true
 	autoupdate = true
 
 [rebase]
-	# fixup! / squash! を自動で並べ替える
 	autoSquash = true
-	# 未コミットの変更を自動で stash / 復帰する
 	autoStash = true
-	# 積み上げたブランチの参照もまとめて付け替える（git 2.38+）
 	updateRefs = true
 
 [commit]
-	# コミットメッセージ編集画面に差分を表示する
 	verbose = true
 
 [help]
-	# コマンドの打ち間違いを勝手に実行せず、確認してから実行する
 	autocorrect = prompt
 
 [status]
-	# 未追跡ディレクトリの中身までファイル単位で表示する
 	showUntrackedFiles = all
 
 [log]
@@ -96,25 +74,19 @@
 	br = branch
 	ci = commit
 	ca = commit --amend
-	# 直前のコミットをメッセージそのままで作り直す
 	amend = commit --amend --no-edit
 	unstage = restore --staged
 	last = log -1 HEAD --stat
-	# グラフ付きの1行ログ
 	lg = log --graph --abbrev-commit --date=relative \
 		--format=format:'%C(bold blue)%h%C(reset) %C(dim white)%ar%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)'
-	# 直前のコミットを取り消す（変更内容はステージに残す）
 	undo = reset --soft HEAD~1
-	# 他人の push を上書きしない安全な強制 push
 	pushf = push --force-with-lease
-	# 今どのブランチにいるか
 	current = rev-parse --abbrev-ref HEAD
-	# 手元で消して良いブランチを探す用
 	merged = branch --merged
 	aliases = config --get-regexp ^alias\\.
 
-# マシン固有・秘密情報（リポジトリ管理外。無くてもエラーにならない）
 [include]
 	path = ~/.gitconfig.local
+
 [http]
 	version = HTTP/2
