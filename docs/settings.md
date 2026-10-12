@@ -645,7 +645,7 @@ EOF
 | 設定 | 効果 |
 |---|---|
 | `window.newWindowDimensions: "inherit"` | 新規ウィンドウを直前のウィンドウと同じサイズで開く |
-| `editor.tabSize: 2` | タブ幅を2に |
+| `editor.tabSize: 2` | タブ幅を2に（**`editor.detectIndentation: false` とセットで効く**。下記参照） |
 | `editor.renderWhitespace: "boundary"` | 空白を可視化。ただし単語間の単一スペースは表示しない |
 | `workbench.colorCustomizations` | アクティブタブの背景を紫、文字を明るいグレーに |
 | `workbench.iconTheme: "material-icon-theme"` | ファイルアイコンのテーマ |
@@ -666,6 +666,31 @@ EOF
 `package.json` の下に `yarn.lock` や `package-lock.json` をぶら下げる、
 `*.ts` の下に生成された `*.js` をぶら下げる、といった表示にする。
 ファイル一覧の見通しが良くなる。
+
+**`editor.detectIndentation: false`（2026-10-12 追加）**
+`editor.tabSize: 2` を書いているのにタブ幅が4で表示される、という現象の対策。
+
+原因は `editor.detectIndentation` の既定値が `true` であること。ONのとき
+VS Code は**ファイルを開くたびに中身からインデント幅を推測し、推測値で
+`editor.tabSize` を上書きする**。つまり `editor.tabSize` は「推測に失敗した
+ときのフォールバック」に格下げされていて、4スペースで書かれたファイルを
+開けば画面上も4になる。ステータスバー右下の `Spaces: 4` はこの推測結果。
+
+`false` にすると、ファイルの中身に関わらず常に `editor.tabSize` の値が使われる。
+
+**トレードオフ**: 4スペースで書かれた既存ファイルを編集すると、2スペースで
+追記してしまいそのファイル内でインデントが混ざる。`~/aftee/` 配下は
+Rails 系も Terraform も2スペースなので実害は小さいと判断して `false` にした。
+4スペース文化のファイルを触るときは、ステータスバーの `Spaces: 2` をクリックして
+そのファイルだけ手動で切り替える。
+
+**より筋の良い代替案（今回は採らず）**: `detectIndentation` は `true` のままにして、
+リポジトリごとに `.editorconfig` を置く。EditorConfig は detectIndentation より
+優先されるので、リポジトリの流儀に自動で従いつつ混在も防げる。採らなかった理由は、
+業務リポジトリへのファイル追加にチームの合意が要ることと、
+`EditorConfig for VS Code` 拡張のインストールが前提になること。
+なお `~/aftee/` では `daisy-mpwb` と `daisy-sptl` の2つだけが既に
+`.editorconfig`（`indent_size = 2`）を持っている。
 
 ### 今回追加した設定
 
@@ -1060,32 +1085,6 @@ Karabiner が OS に見せる仮想キーボードの種類を ANSI（US 配列�
 | `cmd+enter` | 下に分割 | 既定では未割り当て |
 | `cmd+shift+enter` | 右に分割 | 同上 |
 | `cmd+w` | `close_surface` | 既定ではウィンドウごと閉じてしまうことがある。ペイン単位で閉じる方を優先する |
-
----
-
-## herdr/config.toml
-
-コーディングエージェント用のターミナルマルチプレクサ herdr の設定。
-`~/.config/herdr/config.toml` にリンクされる。
-
-複数のエージェントを並行して走らせ、その間を行き来する運用を前提に既定値を変えている。
-
-| 設定 | 値 | 理由 |
-|---|---|---|
-| `onboarding` | `false` | 初回ガイドを出さない |
-| `keys.previous_agent` / `next_agent` / `focus_agent` | `prefix+alt+p` / `n` / `1..9` | **既定では未割り当て**。エージェントを行き来する運用では必須級 |
-| `keys.switch_workspace` | `prefix+shift+1..9` | ワークスペースの直接切り替え |
-| `keys.last_pane` | `prefix+tab` | 司令塔 ↔ 委任先の往復 |
-| `keys.open_worktree` | `prefix+alt+g` | worktree を開く。**`remove_worktree` は誤操作が怖いので意図的に割り当てていない** |
-| `ui.agent_panel_sort` | `priority` | 注意が必要な（blocked の）エージェントを取りこぼさない並び |
-| `ui.show_agent_labels_on_pane_borders` | `true` | 1タブに複数エージェントを並べたとき、どのペインが誰かをペイン枠に出す |
-| `ui.hide_tab_bar_when_single_tab` | `true` | ペインが縦に潰れる状況で1行稼ぐ |
-| `ui.sidebar.agents.rows_by_agent.claude` | 3行構成 | `terminal_title_stripped` に Claude 自身のタスク要約（または `--name`）が入るので、「どの委任先が今どのサブタスクをやっているか」をサイドバーで一覧できる |
-| `ui.toast.delivery` | `system` | 既定 `off` のままだと `herdr notification show` が `{"shown":false,"reason":"disabled"}` で何もしない |
-| `experimental.switch_ascii_input_source_in_prefix` | `true` | 日本語入力（IME）有効時でも `prefix+n` などが通るようにする |
-| `experimental.reveal_hidden_cursor_for_cjk_ime` ほか | `true` / `["claude"]` / `steady_block` | Claude Code は自前でカーソルを描くため、macOS の IME 候補ウィンドウが追従しない。これを補正する |
-| `experimental.pane_history` | `true` | サーバ再起動をまたいで直近のペイン画面履歴を残す |
-| `advanced.scrollback_limit_bytes` | `40000000` | `pane run` で走らせたテスト / ビルドのログ用。**Claude Code のような alternate screen アプリには効かない** |
 
 ---
 

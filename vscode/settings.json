@@ -2,37 +2,38 @@
   // 各設定の理由は dotfiles/docs/settings.md「vscode/settings.json」を参照
   "window.newWindowDimensions": "inherit",
   "editor.tabSize": 2,
+  "editor.detectIndentation": false,
   "editor.renderWhitespace": "boundary",
   "workbench.colorCustomizations": {
     "tab.activeBackground": "#7442ad",
-    "tab.activeForeground": "#d3d2d4",
+    "tab.activeForeground": "#d3d2d4"
   },
   "workbench.iconTheme": "material-icon-theme",
   "[html]": {
-    "editor.defaultFormatter": "vscode.html-language-features",
+    "editor.defaultFormatter": "vscode.html-language-features"
   },
   "[markdown]": {
-    "editor.formatOnSave": false,
+    "editor.formatOnSave": false
   },
   "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[ruby]": {
     "editor.defaultFormatter": "Shopify.ruby-lsp",
     "editor.formatOnSave": false,
-    "editor.wordSeparators": "`~#%^&*()-=+[{]}\\|;:'\",.<>/",
+    "editor.wordSeparators": "`~#%^&*()-=+[{]}\\|;:'\",.<>/"
   },
   "[terraform]": {
     "editor.defaultFormatter": "hashicorp.terraform",
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": true
   },
   "[terraform-vars]": {
     "editor.defaultFormatter": "hashicorp.terraform",
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": true
   },
   "[erb]": {
     "editor.formatOnSave": false,
-    "editor.wordSeparators": "`~#%^&*()-=+[{]}\\|;:'\",.<>/",
+    "editor.wordSeparators": "`~#%^&*()-=+[{]}\\|;:'\",.<>/"
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
@@ -62,7 +63,7 @@
     ".rubocop.yml": ".rubocop_todo.yml",
     "docker-compose.yml": "docker-compose.*.yml, Dockerfile*, .dockerignore",
     ".env": ".env.*",
-    "README.md": "LICENSE*, CHANGELOG*, CONTRIBUTING*, CODE_OF_CONDUCT*",
+    "README.md": "LICENSE*, CHANGELOG*, CONTRIBUTING*, CODE_OF_CONDUCT*"
   },
   "window.title": "${dirty}${activeEditorShort}${separator}${activeRepositoryName}${separator}${activeRepositoryBranchName}${separator}${rootName}",
   "files.trimTrailingWhitespace": true,
@@ -86,7 +87,7 @@
     "**/.next": true,
     "**/storybook-static": true,
     "**/.source": true,
-    "**/.ruby-lsp": true,
+    "**/.ruby-lsp": true
   },
   "search.exclude": {
     "**/node_modules": true,
@@ -109,7 +110,7 @@
     "**/Gemfile.lock": true,
     "**/*.lock": true,
     "**/.terraform.lock.hcl": true,
-    "**/*.xlsx": true,
+    "**/*.xlsx": true
   },
   "search.followSymlinks": false,
   "files.watcherExclude": {
@@ -131,7 +132,7 @@
     "**/storybook-static/**": true,
     "**/.source/**": true,
     "**/.ruby-lsp/**": true,
-    "**/.lsp/**": true,
+    "**/.lsp/**": true
   },
   "search.useGlobalIgnoreFiles": true,
   "git.autofetch": true,
@@ -143,27 +144,28 @@
   "git.openRepositoryInParentFolders": "never",
   "terminal.integrated.scrollback": 10000,
   "rubyLsp.rubyVersionManager": {
-    "identifier": "rbenv",
+    "identifier": "rbenv"
   },
   "editor.semanticHighlighting.enabled": true,
   "emmet.includeLanguages": {
-    "erb": "html",
+    "erb": "html"
   },
   "workbench.editor.customLabels.patterns": {
     "**/app/views/**/*": "${dirname}/${filename}.${extname}",
     "**/spec/**/*_spec.rb": "${dirname}/${filename}.${extname}",
-    "**/test/**/*_test.rb": "${dirname}/${filename}.${extname}",
+    "**/test/**/*_test.rb": "${dirname}/${filename}.${extname}"
   },
   "files.associations": {
     "Brewfile": "ruby",
-    ".simplecov": "ruby",
+    ".simplecov": "ruby"
   },
   "gitlens.graph.details.location": "auto",
   "gitlens.gitCommands.skipConfirmations": [
     "fetch:command",
     "stash-push:command",
-    "switch:command",
+    "switch:command"
   ],
   "cSpell.userWords": ["atobarai"],
   "extensions.ignoreRecommendations": true,
+  "editor.rulers": [80]
 }
