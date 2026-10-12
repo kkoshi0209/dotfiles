@@ -85,3 +85,11 @@ alias reload='exec zsh -l'
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
 export PATH="/opt/homebrew/opt/postgresql@18/bin:$PATH"
+export PATH="/opt/homebrew/opt/postgresql@14/bin:$PATH"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# bun completions
+[ -s "/Users/k.koshi/.bun/_bun" ] && source "/Users/k.koshi/.bun/_bun"
