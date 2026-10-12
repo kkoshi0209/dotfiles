@@ -9,7 +9,6 @@ brew "openjdk@21"
 brew "rbenv"
 brew "yarn"
 brew "hashicorp/tap/terraform"
-brew "herdr"
 
 cask "claude-code"
 cask "ghostty"

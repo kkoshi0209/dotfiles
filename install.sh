@@ -16,12 +16,10 @@ LINKS=(
   "karabiner/karabiner.json:$HOME/.config/karabiner/karabiner.json"
   ".claude/settings.json:$HOME/.claude/settings.json"
   ".claude/CLAUDE.md:$HOME/.claude/CLAUDE.md"
-  ".claude/skills/herdr-delegate:$HOME/.claude/skills/herdr-delegate"
   ".claude/skills/mermaid-rules:$HOME/.claude/skills/mermaid-rules"
   ".claude/agents:$HOME/.claude/agents"
   ".claude/hooks/check-mermaid-br.py:$HOME/.claude/hooks/check-mermaid-br.py"
   "ghostty/config:$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
-  "herdr/config.toml:$HOME/.config/herdr/config.toml"
 )
 
 for entry in "${LINKS[@]}"; do
