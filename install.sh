@@ -17,6 +17,8 @@ LINKS=(
   ".claude/settings.json:$HOME/.claude/settings.json"
   ".claude/CLAUDE.md:$HOME/.claude/CLAUDE.md"
   ".claude/skills/mermaid-rules:$HOME/.claude/skills/mermaid-rules"
+  ".claude/skills/writing-rules:$HOME/.claude/skills/writing-rules"
+  ".claude/skills/self-review:$HOME/.claude/skills/self-review"
   ".claude/agents:$HOME/.claude/agents"
   ".claude/hooks/check-mermaid-br.py:$HOME/.claude/hooks/check-mermaid-br.py"
   "ghostty/config:$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"

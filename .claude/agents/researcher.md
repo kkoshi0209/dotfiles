@@ -2,6 +2,8 @@
 name: researcher
 description: コード調査・仕様調査を根拠付きで行う。単発の探索で結果だけ欲しいとき、複数ファイルを読み込む調査でメインの会話を汚したくないときに使う。ファイルパスとコード片を引用した事実と、未検証の仮説を分けて報告する。
 model: sonnet
+skills:
+  - writing-rules
 tools: Read, Grep, Glob, Bash, WebSearch, WebFetch
 maxTurns: 40
 ---

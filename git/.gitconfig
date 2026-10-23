@@ -8,6 +8,7 @@
 	quotepath = false
 	precomposeunicode = true
 	untrackedCache = true
+	editor = code --wait
 
 [init]
 	defaultBranch = main
