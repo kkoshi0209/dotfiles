@@ -1,6 +1,6 @@
 ---
 name: software-architecture
-description: "コードを実装する前に決めておく設計方針。呼び出し側から見て何をするか分かる関数にする、業務ロジックをフレームワーク/DBから分離する、重複と車輪の再発明を避ける、ネストを減らす、型付きのエラーハンドリングをする、独立した非同期処理は並列化する。`test-driven-development`でテストを書く前、実装方針を決める直前に読む。"
+description: "コードを実装する前に決めておく設計方針。呼び出し側から見て何をするか分かる関数・名前にする、業務ロジックをフレームワーク/DBから分離する、抽象化は早すぎず3箇所目で行い重複と車輪の再発明を避ける、ネストを減らす、型付きのエラーハンドリングをする、独立した非同期処理は並列化する。`test-driven-development`でテストを書く前、実装方針を決める直前に読む。"
 ---
 
 # 実装方針の原則
@@ -27,6 +27,8 @@ validateResult(result) // -> throws
 const result = performProcess(param)
 if (!isValid(result)) throw new ProcessingError(result)
 ```
+
+- **名前がその関数・変数の唯一の説明になる。** 呼び出し側はコメントではなく名前だけを見て使うかどうかを判断する。処理の中身を読まないと何をするか分からない名前(`process`, `handle`, `data`)を避け、何をする/何であるかを名前自体に込める。良い名前が見つからないときは、たいてい関数の責務が1つに定まっていない
 
 出典: Command-Query Separation (Fowler, Meyer) / Policy-Mechanism Separation / Explicit Data Flow / Principle of Least Astonishment (Martin, Clean Code)
 
@@ -56,9 +58,10 @@ app.post("/orders", async (req, res) => {
 ## 3. 重複と車輪の再発明を避ける
 
 - **同じ関数・同じ業務ルール・同じ概念を3箇所目で書こうとしたら抽出する**(Fowlerの「3度目のルール」)。関数の重複は見つけやすいが、**同じ判断を変数名を変えて複数箇所に書く「ロジックの重複」**や、**「アクティブなユーザーとは何か」のような概念を条件式のまま複数箇所にばらまく「概念の重複」**は気づきにくく、仕様変更時に直し漏れが起きる。1箇所の関数・1つの名前付き述語にまとめる
+- **抽象化は2箇所目で急がず、3箇所目で行う。** 具体的なコードが2つしか無い段階では、何が本質的な共通点で何がたまたま一致しているだけかを判断できない。早すぎる抽象化(誤った抽象化)は、後から来た3つ目のケースに無理やり当てはめようとして条件分岐だらけの共通関数になり、重複したままの3つのコードより直しにくくなる。「具体を複数集めてから共通点を抽出する」順番を守り、「将来こうなりそうだから」で先に抽象から作らない
 - **車輪を再発明する前にnpmの既存ライブラリを探す。** リトライ処理・認証・フォームバリデーションなど、自作するとテスト・保守の負債になりやすい領域は特にそうする。自作が妥当なのは、ドメイン固有のロジック、パフォーマンス上どうしても必要な場合、既存ライブラリでは要件を満たせないと確認した場合に限る
 
-出典: The Pragmatic Programmer (Hunt & Thomas, DRY) / Refactoring (Fowler, Rule of Three)
+出典: The Pragmatic Programmer (Hunt & Thomas, DRY) / Refactoring (Fowler, Rule of Three) / Sandi Metz, "The Wrong Abstraction"
 
 ## 4. ネストを減らし、関数・ファイルを分割する
 
